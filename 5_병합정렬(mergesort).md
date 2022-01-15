@@ -12,45 +12,56 @@
 
 ```java
 public class FirstClass {
+
+  private static int[] sorted = new int[8];
+
   public static void main(String[] args) {
+    int[] array = {7,6,5,8,3,5,9,1};
 
-    int[] array = {1, 10, 5, 8, 7, 6, 4, 3, 2, 9};
-
-    mergesort(array, 0, 10 - 1);
-    for(int i =0; i<10;i++) {
+    mergesort(array, 0, 7);
+    for(int i =0; i<8;i++) {
       System.out.println(array[i]);
     }
   }
-  // 재귀함수 이용
-  public static void mergesort(int[] array, int start, int end) {
-    if(start >= end) { // 원소가 1개인 경우
-      return;
+  public static void mergesort(int[] array, int m, int n) {
+    if(m < n) {
+      int middle = (m+n) / 2;
+      mergesort(array,m,middle);
+      mergesort(array,middle+1,n);
+      merge(array,m,middle,n);
     }
-    int key = start;  // 키는 첫번째 원소 (피벗값)
-    int i = start + 1;
-    int j = end;
-    int temp = 0;
-
-    while(i<=j) { // 엇갈릴때까지 반복
-      while(i <= end && array[i] <= array[key]) { // 키 값보다 큰값을 만날떄까지
+  }
+  public static void merge(int[] array, int m, int middle, int n) {
+    int i = m;
+    int j = middle + 1;
+    int k = m;
+    //작은 순서대로 배열에 삽입
+    while (i <= middle && j <=n) {
+      if(array[i] <= array[j]) {
+        sorted[k] = array[i];
         i++;
-      }
-      while(j > start && array[j] >= array[key]) { // 키 값보다 작은값을 만날때까지
-        j--;
-      }
-      if(i > j) { // 현재 엇갈린 상태면 키 값과 교체
-        temp = array[j];
-        array[j] = array[key];
-        array[key] = temp;
       }else {
-        temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
+        sorted[k] = array[j];
+        j++;
+      }
+      k++;
+    }
+    // 남은 데이터도 삽입
+    if(i>middle) {
+      for(int t = j; t<=n;t++) {
+        sorted[k] = array[t];
+        k++;
+      }
+    }else {
+      for(int t = i; t<=middle;t++) {
+        sorted[k] = array[t];
+        k++;
       }
     }
-    // while 문이 끝나면 다시 시작
-    quicksort(array, start, j-1);
-    quicksort(array, j+1, end);
+    // 정렬된 배열을 삽입
+    for (int t = m; t <=n; t++) {
+      array[t] = sorted[t];
+    }
   }
 }
 ```
